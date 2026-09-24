@@ -24,7 +24,7 @@ env:
 
 jobs:
   dong-bo:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
       changed: ${{ steps.sync.outputs.changed }}
@@ -71,7 +71,7 @@ jobs:
   trien-khai:
     needs: dong-bo
     if: needs.dong-bo.outputs.changed == '1' || github.event_name != 'schedule'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
