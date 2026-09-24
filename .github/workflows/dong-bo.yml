@@ -1,5 +1,6 @@
-# Tự lấy nhạc studio bỏ vào thư mục Google Drive → đổi mp3 → cập nhật list.json → đăng lên GitHub Pages.
-# Chạy ~10 phút/lần; bấm "Run workflow" ở tab Actions để chạy ngay.
+# Kho nhạc thiệp cưới: (1) file tải thẳng lên tai-len/ (chung) hoặc tai-len/rieng/ (riêng) → chạy ngay khi Commit;
+# (2) thư mục Google Drive → ~10 phút/lần. Đổi mp3 → cập nhật list.json → đăng lên GitHub Pages.
+# Bấm "Run workflow" ở tab Actions để chạy ngay. Đẩy lỗi (có lần tải khác chen vào) thì lấy bản mới nhất rồi làm lại.
 name: Dong bo nhac tu Google Drive
 
 on:
@@ -30,6 +31,8 @@ jobs:
       changed: ${{ steps.sync.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -45,12 +48,24 @@ jobs:
 
       - name: Luu thay doi
         if: steps.sync.outputs.changed == '1'
+        env:
+          TOM_TAT: ${{ steps.sync.outputs.summary }}
         run: |
           git config user.name "dong-bo-nhac"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A list.json n
-          git commit -q -m "Dong bo nhac: ${{ steps.sync.outputs.summary }}"
-          git push -q
+          for i in 1 2 3 4 5; do
+            if [ "$i" -gt 1 ]; then
+              sleep $((i * 4))
+              git fetch -q origin main && git reset -q --hard origin/main
+              python tools/dong_bo.py > /dev/null
+            fi
+            git add -A list.json tai-len
+            git add -A n 2>/dev/null || true
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -q -m "Dong bo nhac: $TOM_TAT"
+            if git push -q origin HEAD:main; then exit 0; fi
+          done
+          exit 1
 
       - name: Giu lich chay (GitHub tat lich neu kho im 60 ngay)
         run: |
@@ -59,7 +74,7 @@ jobs:
             git config user.name "dong-bo-nhac"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             date -u +%FT%TZ > .giu-lich
-            git add .giu-lich && git commit -q -m "Giu lich tu dong bo" && git push -q
+            git add .giu-lich && git commit -q -m "Giu lich tu dong bo" && git push -q origin HEAD:main
           fi
 
       - name: Dong goi trang
