@@ -1,5 +1,5 @@
 {
- "cap_nhat": "2026-09-25T00:55:54Z",
+ "cap_nhat": "2026-10-07T11:47:56Z",
  "bai": [
   {
    "id": "t58df97d1acd4",
@@ -8,6 +8,24 @@
    "giay": 249,
    "rieng": false,
    "them": "2026-09-25",
+   "nguon": "tai"
+  },
+  {
+   "id": "t0259a4e996c5",
+   "ten": "Maroon 5 - Sugar",
+   "file": "n/t0259a4e996c5.mp3",
+   "giay": 264,
+   "rieng": true,
+   "them": "2026-10-07",
+   "nguon": "tai"
+  },
+  {
+   "id": "t9218a815aa17",
+   "ten": "Shane Filan - Beautiful In White",
+   "file": "n/t9218a815aa17.mp3",
+   "giay": 235,
+   "rieng": true,
+   "them": "2026-10-07",
    "nguon": "tai"
   }
  ],
